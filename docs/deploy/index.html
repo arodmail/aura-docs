@@ -1,0 +1,203 @@
+<h2 class="uk-h2">Deploy</h2><script>if (document = top) window.location.href = "../index.html";</script>
+
+<div>By Alex Rodriguez | Published August 31, 2021 </div>
+
+</p></p>
+
+The deployment step of the PAM on-boarding workflow moves secret templates, remote password changers, as well as
+secrets (credentials) in the PAM system (Secret Server) to a production environment, and runs production readiness tests.
+Production testing should be performed in the production environment by a QA tester, and not by the PAM designer/implementer.
+
+</p>
+
+Deployment uses endpoints in the Production Environment for AURA:
+
+</p>
+
+<table class="table">
+    <tr>
+        <th>Environment</th><th>Endpoint - LB URL</th>
+    </tr>
+    <tr><td>Prd</td><td><a class="uk-link-muted" href="https://pam.sec.ibm.com/SecretServer/" target="_blank">
+        Secret Server</a></td></tr>
+    <tr><td>Prd</td><td><a class="uk-link-muted" href="https://pam.sec.ibm.com/credentials-manager/" target="_blank">
+        Credentials Manager</a></td></tr>
+    <tr><td>Prd</td><td><a class="uk-link-muted" href="https://pam.sec.ibm.com/credentials-api/swagger-ui/index.html?url=https://pam.sec.ibm.com/credentials-api/v3/api-docs/" target="_blank">
+        Credentials API</a></td></tr>
+</table>
+
+</p>
+
+If LB URLs are not responsive, then Direct URLs may be used as alternatives to complete validation tasks:
+
+</p>
+
+<table class="table">
+    <tr>
+        <th>Environment</th><th>Endpoint - Direct URL</th>
+    </tr>
+    <tr><td>Prd</td><td><a class="uk-link-muted" href="https://atl-p-iamwb-01a.sec.ibm.com/SecretServer/" target="_blank">
+        Secret Server</a></td></tr>
+    <tr><td>Prd</td><td><a class="uk-link-muted "href="https://aura-credentials-manager-xpp.apps-priv.atl-prd-ocp-01.cl.sec.ibm.com/" target="_blank">
+        Credentials Manager</a></td></tr>
+    <tr><td>Prd</td><td><a class="uk-link-muted" href="https://aura-credentials-ms-xpp.apps-priv.atl-prd-ocp-01.cl.sec.ibm.com/swagger-ui/index.html?configUrl=/v3/api-docs/swagger-config#/" target="_blank">
+        Credentials API</a></td></tr>
+</table>
+
+
+</p></p>
+
+<h3 class="uk-h3 tm-heading-fragment">1. Export/Import Secret Template(s)</h3>
+
+<h4 class="uk-h4 tm-heading-fragment">1.1 Export</h4>
+
+<p class="indent-1">1.1.1 Login to <b>Secret Server - Stg</b>
+<p class="indent-1">1.1.2 Admin > Secret Templates
+<p class="indent-1">1.1.3 Select the template to export
+<p class="indent-1">1.1.4 Click <b>Export</b>
+<p class="indent-1">1.1.5 Copy to Clipboard (or select XML and copy to a temporary file)
+
+</p></p></p></p>
+
+<div align="center" style="padding-top: 15px; border:1px;">
+    <img src="images/secret-template-export.png" style="border: 1px solid #e5e5e5; width: 70%"/>
+</div>
+
+</p></p></p></p>
+
+<h4 class="uk-h4 tm-heading-fragment">1.2 Import</h4>
+
+<p class="indent-1">1.2.1 Login to <b>Secret Server - Prd</b>
+<p class="indent-1">1.2.2 Admin > Secret Templates
+<p class="indent-1">1.2.3 Go to Import Secret Templates, paste your XML into the box below to add your new Secret Template.
+<p class="indent-1">1.2.4 Click Import
+<p class="indent-1">1.2.5 Verify Secret Template imported successfully (e.g., compare field names and field types to Dev).
+
+</p></p></p></p>
+
+<div align="center" style="padding-top: 15px; border:1px;">
+    <img src="images/secret-template-import.png" style="border: 1px solid #e5e5e5; width: 70%"/>
+</div>
+
+</p></p></p></p>
+
+<h3 class="uk-h3 tm-heading-fragment">2. Export/Import Remote Password Changer(s)</h3>
+
+TBD if possible
+
+<h3 class="uk-h3 tm-heading-fragment">3. Copy Password Changer from Stg to Prd</h3>
+
+If the design and implementation steps provides for a custom password changer to be created, then follow the procedure
+below. Otherwise, to use a built-in RPC, skip this step and go to "Assign Password Changer to Secret Template".
+
+<p>See Thycotic Documentation for <a class="uk-link-muted" href="https://docs.thycotic.com/ss/10.9.0/remote-password-changing/custom-password-changers/creating-a-custom-password-changer" target="_blank">
+    Creating a Custom Password Changer</a>
+</p>
+
+<h3 class="uk-h3 tm-heading-fragment">4. Assign Password Changer to Secret Template</h3>
+
+Select the secret template imported in Step 1.1, it's ready to be assigned to an RPC, if required. Only Dynamic and Functional credentials
+require a remote password changer. This step may be skipped for Static and Controlled credential templates.
+
+<p>See Thycotic Documentation for <a class="uk-link-muted" href="https://docs.thycotic.com/ss/10.9.0/remote-password-changing/assign-a-pw-changer-to-a-secret-template/index.md" target="_blank">
+    Assigning a Password Changer to a Secret Template</a>
+</p>
+
+<h3 class="uk-h3 tm-heading-fragment">5. Export/Import Secret(s)</h3>
+
+<p>See Thycotic Documentation for <a class="uk-link-muted" href="https://docs.thycotic.com/ss/10.9.0/secret-import-and-export" target="_blank">
+    Secret Import and Export</a>
+</p>
+
+Note: The <code>HostIP</code> and/or <code>Hostname</code> field values in imported secrets from Stg, should be updated
+to match production <code>HostIP</code> and/or <code>Hostname</code> endpoint values for Dynamic and/or Functional
+credentials/secrets.
+
+
+<h3 class="uk-h3 tm-heading-fragment">6. Verify Network Access to Customer Production Environment</h3>
+
+Only Dynamic and Functional credentials require a remote password changer and network connectivity to a
+remote host. This step may be skipped for Static and Controlled credential templates.
+
+Network access from the Secret Server to a Production Environment, must be requested and verified during Deployment. Prior
+to running deployment tests, confirm that network access is in place between Secret Server - Prod and the Customer
+Production Environment.
+
+<h3 class="uk-h3 tm-heading-fragment">7. Deployment Test</h3>
+
+The previous steps setup for deployment tests to be successful. The following tests can be followed for Dynamic, Static,
+Controlled and/or Functional credentials, depending on the credentials being on-boarded.
+
+<h4 class="uk-h4 tm-heading-fragment">A. Secret Server</h4>
+
+To test Dynamic and Controlled secrets/credentials through Secret Server:
+
+<p>1. Login with your AD username/password to <b>Secret Server - Prd</b></p>
+
+<p>2. Run a <a class="uk-link-muted" href="https://docs.thycotic.com/ss/10.9.0/secret-heartbeats/running-heartbeat-for-a-secret" target="_blank">Heartbeat</a>
+    for each secret.</p>
+<p>3. Check-out the secret</p>
+<p>4. Confirm login/access to the managed endpoint using the password checked-out</p>
+<p>5. Check-in the secret</p>
+<p>6. If applicable, confirm password rotation is successful after check-in</p>
+
+<p>
+    <b>Note:</b> Heartbeat is only required to be run for Dynamic and Functional secrets, not required for Static or Controlled secrets.
+<p>
+<p>
+
+<h4 class="uk-h4 tm-heading-fragment">B. Credentials Manager</h4>
+
+To test Dynamic secrets/credentials through Credentials Manager:
+
+<p>1. Login with your AD username/password to <b>Credentials Manager - Prd</b></p>
+<p>2. Search for the credential</p>
+<p>3. Check-out the credential</p>
+<p>4. Confirm Login to the managed endpoint using the password checked-out</p>
+<p>5. Check-in the credential</p>
+<p>6. Confirm password rotation is successful after check-in</p>
+
+<h4 class="uk-h4 tm-heading-fragment">C. Credentials API</h4>
+
+To test Static and/or Functional credentials access through <a class="uk-link-muted" target="_blank" href="https://pam.sec.ibm.com/credentials-api/swagger-ui/index.html?url=https://pam.sec.ibm.com/credentials-api/v3/api-docs/">Credentials API</a>:
+
+<p>1. Login with your AD username/password to <b>Credentials API - Prd</b></p>
+
+<p>2. Search for the credential by search criteria:</p>
+<p class="indent-1">2.1 Expand GET /credentials</p>
+<p class="indent-1">2.2 Click <b>Try it out</b></p>
+<p class="indent-1">2.3 Select <b>checkOutEnabled</b> = false</p>
+<p class="indent-1">2.4 Enter a templateName | machinePlatform | folderName | searchText</p>
+<p class="indent-1">2.5 Click <b>Execute</b></p>
+<p class="indent-1">2.6 Confirm expected credential(s) are returned in the response based upon search criteria</p>
+
+<p>2. Search for the credential by Device Id:</p>
+<p class="indent-1">2.1 Expand GET /credentials/{deviceId}</p>
+<p class="indent-1">2.2 Click <b>Try it out</b></p>
+<p class="indent-1">2.3 Enter a <b>deviceId</b> value</p>
+<p class="indent-1">2.4 Click <b>Execute</b></p>
+<p class="indent-1">2.5 Confirm expected credential(s) are returned in the response based upon Device Id</p>
+
+
+<h3 class="uk-h3 tm-heading-fragment">8. Summary</h3>
+
+The following 5 outcomes are expected from deployment tasks:
+
+<ol>
+    <li>Export/Import Secret Templates for Dynamic, Static, Controlled and/or Functional credentials from Stg to Prd</li>
+    <li>Re-Create Password Changers in Prd, but only for Dynamic and Functional credentials</li>
+    <li>Export the Secrets (Credentials) created during Validation</li>
+    <li>Verify Network Access to Production Environment from Secret Server - Prd</li>
+    <li>Run deployment tests in production to confirm access to credentials as well as check-out/in, if applicable</li>
+</ol>
+
+<h3 class="uk-h3 tm-heading-fragment">9. Done</h3>
+
+Once deployment is complete, PAM designers and testers are done with the PAM on-boarding workflow.
+
+</div>
+
+</div>
+
+</body>
+</html>

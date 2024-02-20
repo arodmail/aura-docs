@@ -1,0 +1,207 @@
+<h2 class="uk-h2">Authorization</h2><script>if (document = top) window.location.href = "../index.html";</script>
+
+<div>By Alex Rodriguez | Published August 31, 2021 </div>
+
+</p></p>
+
+Access to credentials in Aura is granted or denied to an AD user by their membership in an Active Directory Group. Through AD
+synchronization, when an application sends a request to an Aura API, the API authorizes the request through Secret Server.
+A goal of AD synchronization is to selectively place members of group types into Secret Server to be authorized at a higher
+or a lower level in a secure folder structure.
+
+<h4 class="uk-h4 tm-heading-fragment">1. Folder Structure</h4>
+
+A higher level in the folder structure is reserved for applications to retrieve credentials from Aura programmatically, for example,
+to retrieve API tokens used for device monitoring and other automation purposes. A mid-level in the folder structure is
+intended to authorize Deployment Engineers for digital platform on-boarding into the PAM solution, (to create Secret
+Templates, configure Remote Password Changers, enable password rotation and lifecycle management), as well as to on-board
+customer devices into Secret Server by creating and/or discovering elevated credentials on managed devices. A lower
+level in the folder structure is where SOC Analysts are authorized and limited to access only the credentials they need
+for their day-to-day operational needs.
+
+</p></p>
+
+<div align="center" style="padding-top: 15px;padding-bottom: 15px;"><img src="images/rbac-model.png" width="950"/></div>
+
+<h4 class="uk-h4 tm-heading-fragment">2. Folder Roots</h4>
+
+The purpose of root nodes in the folder structure is to securely store credential categories:
+
+</p></p>
+
+<table class="table">
+  <tr>
+    <th></th><th>Root Name</th><th>Purpose</th>
+  </tr>
+  <tr><td>1</td><td>Dynamic</td><td>Credentials that require check-in/out and automated remote password rotation</td></tr>
+  <tr><td>2</td><td>Static</td><td>Vaulted credentials that do not change frequently or automatically</td></tr>
+  <tr><td>3</td><td>Controlled</td><td>Credentials to store securely, allow manual password rotation</td></tr>
+  <tr><td>4</td><td>Functional</td><td>Like static, but supports automated remote password rotation </td></tr>
+</table>
+
+<h4 class="uk-h4 tm-heading-fragment">3. Group Types</h4>
+
+Members of group types A, B, and C are recognized by Aura by their AD username/password.
+
+</p></p>
+
+<table class="table">
+  <tr>
+    <th>Group Type</th><th>Members</th><th>Count (estimated)</th><th>Authorization Level</th>
+  </tr>
+  <tr><td>Group Type A</td><td>Deployment Engineers</td><td>25</td><td>Cross Customer</td></tr>
+  <tr><td>Group Type B</td><td>SOC Analysts</td><td>430</td><td>Single Platform or Cross Platform</td></tr>
+  <tr><td>Group Type C</td><td>Applications and Services</td><td>5</td><td>Global</td></tr>
+</table>
+
+<h4 class="uk-h4 tm-heading-fragment">4. Active Directory Synchronization</h4>
+
+When AD synchronization runs, it maps members of group type A into Local User Accounts in Secret Server. These users
+are authenticated by AD username/password and granted access to the Secret Server web console for administrative purposes.
+
+</p></p>
+
+Members of any group type B and C are mapped by AD synchronization into Application User Accounts in Secret Server. These
+users are also authenticated by AD username/password, but are not allowed to access the Secret Server web console. The members
+of any group type B are typically issued a short-lived OAuth token through their AD username/password., on-demand, in order for
+the system to make REST API calls into Secret Server on their behalf. As such, any password view, list, check-out,
+check-in, or other activity by a member of group type B or C is fully tracked and audited by the system through an
+OAuth token, per REST API call.
+
+</p></p>
+
+In some scenarios, members of group type A are not precluded from being issued an OAuth token by the system in order
+to make Secret Server REST API calls on their behalf. As such, while members of group type A typically use the Secret
+Server web console directly, they may also make use of Aura Credentials Migration API and/or Credentials API to perform
+their deployment engineering role. Members of group type A may also use the Credentials Manager Web UI for password
+check-in/check-out, as needed.
+
+</p></p>
+
+<h4 class="uk-h4 tm-heading-fragment">5. Permissions</h4>
+
+Folder permissions apply to the members of each group type:
+
+</p></p>
+
+<table class="table">
+  <tr>
+    <th colspan="2"></th><th colspan="4" style="text-align: center">Folder Permissions</th>
+  </tr>
+  <tr>
+    <td><b>Group Type</b></td>
+    <td><b>Folder Level</b></td>
+    <td><b>Own</b></td><td><b>Edit</b></td><td><b>Add</b></td><td><b>View</b></td>
+  </tr>
+  <tr>
+    <td>Group Type A</td>
+    <td>[Customer]</td>
+    <td>Yes</td><td>Yes</td><td>Yes</td><td>Yes</td>
+  </tr>
+  <tr>
+    <td>Group Type B</td>
+    <td>[Digital Platform]</td>
+    <td>No</td><td>No</td><td>No</td><td>Yes</td>
+  </tr>
+  <tr>
+    <td>Group Type C</td>
+    <td>[Roots]</td>
+    <td>No</td><td>No</td><td>No</td><td>Yes</td>
+  </tr>
+</table>
+
+</p></p>
+
+<b>Owner</b>: Allows the user to create new folders in that folder without forcing inheritance, move the folder, delete the
+folder, rename the folder, and change the permissions and inheritance settings on the folder.
+
+</p></p>
+
+<b>Edit</b>: Allows the user to create new folders in that folder, which forces the "Inherit Permissions from Parent" permission
+on the new folder, move secrets into that folder, and add new secrets into that folder.
+
+</p></p>
+
+<b>Add Secret</b>: Allows the user to add a secret in that folder. Does not grant access to the added secret.
+
+</p></p>
+
+<b>View</b>: Allows the user to see the folder and secrets in that folder that are inheriting permissions from their folder.
+
+
+<h4 class="uk-h4 tm-heading-fragment">6. Authorization Examples</h4>
+
+The following examples show how access to credentials in specific folders is either granted or denied to an AD user based
+upon their membership in an AD group.
+
+</p></p>
+
+<b>6.1 Access Granted</b>
+
+</p></p>
+
+<pre>
+curl -X GET -u 'admin\aura_nagios:password' "https://pam.sec.ibm.com/credentials-api/credentials/?folderName=PR0000000041639"
+</pre>
+
+</p></p>
+
+<b>6.2 Response</b>
+
+</p></p>
+
+<pre>HTTP/1.1 200 OK</pre>
+
+<table class="table">
+  <tr>
+    <th>User</th><th>Group</th><th>Group Type</th><th>Folder</th><th>Credential Type</th><th>Permission</th>
+  </tr>
+  <tr><td>admin\aura_nagios</td><td>AURA_NAGIOS</td><td>Group Type C</td><td>PR0000000041639</td><td>Dynamic</td><td>View</td></tr>
+</table>
+
+</p></p>
+
+The <code>admin\aura_nagios</code> user is granted access to all Dynamic credentials in the PR0000000041639 device folder because
+the user is a member of group AURA_NAGIOS that is of Group Type C, authorized at a root folder level, from where permissions
+<i>cascade down</i> into the lower levels of the folder structure, or, the lower-level PR0000000041639 device folder
+<i>inherits</i> permissions from its parent and ancestor folders.
+
+</p></p>
+
+<b>6.3 Access Denied</b>
+
+</p></p>
+
+<pre>
+curl -X GET -u 'admin\joe_analyst:password' "https://pam.sec.ibm.com/credentials-api/credentials/?folderName=CID001287"
+</pre>
+
+
+<b>6.4 Response</b>
+
+</p></p>
+
+<pre>HTTP/1.1 401 Unauthorized</pre>
+
+<table class="table">
+  <tr>
+    <th>User</th><th>Group</th><th>Group Type</th><th>Folder</th><th>Credential Type</th><th>Permission</th>
+  </tr>
+  <tr><td>admin\joe_analyst</td><td>SOC_ANALYST</td><td>Group Type B</td><td>CID001287</td><td>Static</td><td>None</td></tr>
+</table>
+
+</p></p>
+
+The <code>admin\joe_analyst</code> user is denied access to all Static credentials in the CID001287 customer folder because
+the user is a member of group SOC_ANALYST that is of Group Type B, placed at a Digital Platform folder level, lower than
+the CID001287 customer folder. This arrangement puts the credentials in the CID001287 customer folder  <i>out of scope</i>
+for the user, based on their group membership and the group's placement lower in the folder structure.
+
+</p></p>
+
+</div>
+</div>
+</div>
+
+</body>
+</html>

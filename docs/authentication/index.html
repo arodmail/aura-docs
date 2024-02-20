@@ -1,0 +1,125 @@
+<h2 class="uk-h2">Authentication</h2><script>if (document = top) window.location.href = "../index.html";</script>
+
+<div>By Alex Rodriguez | Published August 31, 2021 </div>
+
+</p></p>
+
+When an application sends a request to an Aura API, the API first <i>authenticates</i> a user, then <i>authorizes</i>
+the request. This section describes authentication mechanisms supported by APIs and explains some differences.
+Through a RBAC (Role Based Access Control) model, strong API security prevents unauthorized access to highly sensitive
+credentials and provides assurances that only authorized access to credentials is granted. Read this section to learn how
+to integrate an application securely with Aura APIs.
+
+</p></p>
+
+<h4 class="uk-h4 tm-heading-fragment">1. Basic Authentication</h4>
+
+To authenticate with an API, use <b>HTTP Basic Authentication</b>, where an HTTP header containing a username and a password are
+separated by a colon and the combined string value is Base64 encoded, then prefixed by the word "Basic " and a space.
+This value is sent to an Aura API in an HTTP header called "Authorization".
+
+</p></p>
+
+For example, to send a request to Credentials API, use HTTP Basic Authentication with <code>curl</code>, specify the
+Active Directory username and password in a <code>-u</code> parameter. Active Directory users are recognized by an
+"admin\" prefix prepended to a username.
+
+<pre>
+curl -X GET -u 'admin\username:password' "https://pam.sec.ibm.com/credentials-api/credentials/"
+</pre>
+
+This request generates the following HTTP request Headers, note the "Authorization" header and Base64 encoded value:
+
+<pre>
+> GET /credentials-api/credentials/ HTTP/1.1
+> Host: pam.sec.ibm.com
+> Authorization: Basic YWRtaW5cdXNlcm5hbWU6cGFzc3dvcmQ=
+> User-Agent: curl/7.64.1
+> Accept: */*
+>
+< HTTP/1.1 200
+</pre>
+
+<h4 class="uk-h4 tm-heading-fragment">2. Bearer Authentication</h4>
+
+<i>Bearer Authentication will be supported in a future release and is recommended for high performance applications</i>
+
+<p>
+
+
+The <b>Bearer Authentication</b> scheme can be used as an alternative to Basic Authentication. Generally, before an
+application can get a response from an API, it must first authenticate using its own credentials. In Bearer Authentication,
+an AD user is verified against Active Directory, and their username/password are exchanged for an access token. The
+access token represents a scope, a duration, and grants access to the same credentials that are granted to the AD user.
+An application that authenticates using this scheme may send requests to APIs by presenting an access token.
+
+
+</p></p>
+
+To exchange AD username and password for an access token, an application sends a request to the
+<a class="uk-link-muted"  target="_blank">Credentials API</a> <code>/login</code> endpoint:
+
+<pre>
+curl -v -X POST https://pam.sec.ibm.com/credentials-api/login?user=username -d 'password'
+</pre>
+
+The response headers include an <code>access_token</code> header that contains the token value:
+
+<pre>
+< HTTP/1.1 200
+< Set-Cookie: JSESSIONID=2265B47C487DC015CD155295EC379EF9; Path=/; HttpOnly
+< access_token: {token_value}
+< Access-control-allow-headers: Content-Type, api_key, Authorization
+< Date: Wed, 31 Dec 2030 23:59:59 GMT
+< Access-control-allow-methods: GET, POST, DELETE, PUT, PATCH, OPTIONS
+< Access-control-allow-origin: *
+< Access-Control-Allow-Credentials: true
+< Access-Control-Expose-Headers: Location
+< Content-Type: application/json;charset=UTF-8
+< Transfer-Encoding: chunked
+< Strict-Transport-Security: max-age=15768000
+</pre>
+
+To present a token using the Bearer Authentication scheme, an application sends an HTTP header called "Authorization" in
+which the value is prefixed by the word "Bearer " a space, followed by the token value:
+
+<pre>
+curl -X GET -H "Authorization: Bearer {token_value}" https://pam.sec.ibm.com/credentials-api/credentials/
+</pre>
+
+A token is valid for a short time period (20 minutes), and its use eliminates the need to verify an AD user against
+Active Directory on each and every request. Bypassing AD user validation by using a token has huge performance benefits.
+For this reason, Bearer Authentication is recommended for high volume applications, for example, applications that
+poll for credentials on short intervals. The recommended approach to authenticate in these cases is for the application
+to loop over steps 1 and 2:
+
+</p></p>
+
+<pre>
+1) exchange AD username/password for an access token
+2) use the token until it expires
+</pre>
+
+</p></p>
+
+When a token expires, the response code from a request sent to an API is <code>401</code> and the response body
+is expected to be:
+
+<pre>
+{
+  "timestamp": "2030-12-31T23:59:59.000+00:00",
+  "status": 401,
+  "error": "Unauthenticated",
+  "message": "Expired Token",
+  "path": "/credentials"
+}
+</pre>
+
+</p></p></p></p>
+
+</div>
+</div>
+</div>
+
+</body>
+</html>

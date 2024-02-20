@@ -1,0 +1,538 @@
+<h2 class="uk-h2">Credentials API</h2><script>if (document = top) window.location.href = "../index.html";</script>
+
+<div>By Alex Rodriguez | Published August 31, 2021 </div>
+
+</p></p>
+
+For system-to-system integration, applications and services may interface with Aura
+<a class="uk-link-muted" target="_blank" href="https://pam.sec.ibm.com/credentials-api/swagger-ui/index.html?url=https://pam.sec.ibm.com/credentials-api/v3/api-docs/">Credentials API</a> to
+create, search, update, and delete credentials.
+
+<h4 class="uk-h4 tm-heading-fragment">1. Credentials Management</h4>
+
+Credentials API provides methods to manage credentials in a secure vault. The API exposes credential information only
+to an authorized user or application. GET methods retrieve credentials by search criteria, and a POST
+method securely adds credentials into the vault, based upon a template. Credentials API is mainly intended to be used
+by the Credentials Manager Web UI, but may also be used by authorized, internal MSS applications that need to retrieve
+credentials to integrate with a managed digital platform.
+
+</p></p>
+
+The API supports Basic Authentication with an Active Directory username/password. <i>Bearer Authentication will also be supported
+  in a future release and is recommended for high performance applications</i>. See
+<a class="uk-link-muted"  href="authentication">Authentication</a> for details.
+
+<h4 class="uk-h4 tm-heading-fragment">2. Get Token</h4>
+
+All requests sent to Credentials API require Basic or Bearer authentication with a secure token. To get a token for
+an AD username/password, send a request to <code>/login</code> as follows:
+
+<pre>
+curl -v -X POST https://pam.sec.ibm.com/credentials-api/login?user=username -d 'password'
+</pre>
+
+<h4 class="uk-h4 tm-heading-fragment">3. Credentials Search</h4>
+
+After a secure token is issued, applications may use it to search and retrieve credentials by search criteria. For example,
+to search by Device ID:
+
+<pre>
+curl -X GET -H "Authorization: Bearer {token_value}" "https://pam.sec.ibm.com/credentials-api/credentials/{deviceId}
+</pre>
+
+Returns a JSON array of credentials that are associated with the given <code>{deviceId}</code>
+
+</p></p>
+
+<b>3.1 Search by Device ID</b>
+
+<p>
+
+Basic Authentication
+
+<pre>
+curl -X GET -u 'admin\username:password' "https://pam.sec.ibm.com/credentials-api/credentials/PR0000000012345
+</pre>
+
+Bearer Authentication
+
+<pre>
+curl -X GET -H "Authorization: Bearer {token_value}" "https://pam.sec.ibm.com/credentials-api/credentials/PR0000000012345
+</pre>
+
+<b>3.2 Sample Response</b>
+
+<pre>
+[
+  {
+    "id": 100,
+    "secretTemplateId": 2000,
+    "folderId": 300,
+    "HostName": "linux-host",
+    "LoginName": "root",
+    "Password": "abc123",
+    "LoginType": "Root",
+    "CustomerName": "Acme",
+    "CustomerId": "CID001287",
+    "HostIP": "127.0.0.1",
+    "MachinePlatform": "Linux",
+    "OperatingSystem": "RedHat",
+    "DeviceId": "PR0000000012345",
+    "LoginId": ""
+  },
+  {
+    "id": 101,
+    "secretTemplateId": 2000,
+    "folderId": 300,
+    "HostName": "linux-host",
+    "LoginName": "admin",
+    "Password": "abc321",
+    "LoginType": "Root",
+    "CustomerName": "Acme",
+    "CustomerId": "CID001287",
+    "HostIP": "127.0.0.1",
+    "MachinePlatform": "Linux",
+    "OperatingSystem": "RedHat",
+    "DeviceId": "PR0000000012345",
+    "LoginId": ""
+  }
+]
+</pre>
+
+To search by Device ID and Credential Name:
+
+<p>
+
+
+Basic Authentication
+
+<pre>
+curl -X GET -u 'admin\username:password' "https://pam.sec.ibm.com/credentials-api/credentials/{deviceId}/{credentialName}
+</pre>
+
+Bearer Authentication
+
+<pre>
+curl -X GET -H "Authorization: Bearer {token_value}" "https://pam.sec.ibm.com/credentials-api/credentials/{deviceId}/{credentialName}
+</pre>
+
+Returns a JSON object for the credential that matches the given <code>{deviceId}</code> and <code>{credentialName}</code>
+
+</p></p>
+
+<b>3.3 Search by Device ID and Login Name</b>
+
+<p>
+
+
+Basic Authentication
+
+<pre>
+curl -X GET -u 'admin\username:password' "https://pam.sec.ibm.com/credentials-api/credentials/PR0000000012345/root
+</pre>
+
+Bearer Authentication
+
+<pre>
+curl -X GET -H "Authorization: Bearer {token_value}" "https://pam.sec.ibm.com/credentials-api/credentials/PR0000000012345/root
+</pre>
+
+<b>3.4 Sample Response</b>
+
+<pre>
+  {
+    "id": 100,
+    "secretTemplateId": 2000,
+    "folderId": 300,
+    "HostName": "linux-host",
+    "LoginName": "root",
+    "Password": "abc123",
+    "LoginType": "Root",
+    "CustomerName": "Acme",
+    "CustomerId": "CID001287",
+    "HostIP": "127.0.0.1",
+    "MachinePlatform": "Linux",
+    "OperatingSystem": "RedHat",
+    "DeviceId": "PR0000000012345",
+    "LoginId": ""
+  }
+</pre>
+
+To search by multiple criteria, for example, by credential category, by machine platform, folder name, or to perform full-text across all
+credential field values, the following extended search options are available to applications.
+
+</p></p>
+
+To search by credential category, in other words to search for credentials that require check-out, search with
+<code>checkOutEnabled</code>:
+
+</p></p>
+
+<b>3.5 Search by Credential Category</b>
+
+<p>
+
+
+Basic Authentication
+
+<pre>
+curl -X GET -u 'admin\username:password' "https://pam.sec.ibm.com/credentials-api/credentials/?checkOutEnabled=true&start=1&limit=2"
+</pre>
+
+Bearer Authentication
+
+<pre>
+curl -X GET -H "Authorization: Bearer {token_value}" "https://pam.sec.ibm.com/credentials-api/credentials/?checkOutEnabled=true&start=1&limit=2"
+</pre>
+
+<b>3.6 Sample Response</b>
+
+<pre>
+[
+  {
+    "id": 102,
+    "secretTemplateId": 2001,
+    "folderId": 301,
+    "HostName": "linux-host-prd",
+    "LoginName": "root",
+    "Password": "abc123",
+    "LoginType": "Root",
+    "CustomerName": "Acme",
+    "CustomerId": "CID001287",
+    "HostIP": "127.0.0.1",
+    "MachinePlatform": "Linux",
+    "OperatingSystem": "RedHat",
+    "DeviceId": "PR0000000012345",
+    "LoginId": "STG000000012345",
+    "checkOutUserDisplayName": "",
+    "checkOutUserId": -1,
+    "checkedOut": false
+  },
+  {
+    "id": 103,
+    "secretTemplateId": 2001,
+    "folderId": 301,
+    "HostName": "linux-host-prd",
+    "LoginName": "admin",
+    "Password": "abc321",
+    "LoginType": "Root",
+    "CustomerName": "Acme",
+    "CustomerId": "CID001287",
+    "HostIP": "127.0.0.1",
+    "MachinePlatform": "Linux",
+    "OperatingSystem": "RedHat",
+    "DeviceId": "PR0000000012345",
+    "checkOutUserDisplayName": "",
+    "checkOutUserId": -1,
+    "checkedOut": false
+  }
+]
+</pre>
+
+<b>3.7 Pagination</b>
+
+</p></p>
+
+For pagination purposes, to navigate through multi-page result sets, specify values for the <code>start</code> and
+<code>limit</code> parameters to define results to be included in the response based upon their order and position in the total
+result set. The example above sends <code>start=1&limit=2</code> to include the first result, 1, and to limit the total
+number of results to return, 2.
+
+</p></p>
+
+For a larger result set, to split up 100 total results into pages of size 20, send 5 requests:
+
+</p></p>
+
+<table class="table">
+  <tr>
+    <th>Request</th><th>Start</th><th>Limit</th><th>Request Parameters</th><th>Results in Page</th>
+  </tr>
+  <tr><td>1</td><td>1</td><td>20</td><td><code>start=1&limit=20</code></td><td>1-20</td></tr>
+  <tr><td>2</td><td>21</td><td>20</td><td><code>start=21&limit=20</code></td><td>21-40</td></tr>
+  <tr><td>3</td><td>41</td><td>20</td><td><code>start=41&limit=20</code></td><td>41-60</td></tr>
+  <tr><td>4</td><td>61</td><td>20</td><td><code>start=61&limit=20</code></td><td>61-80</td></tr>
+  <tr><td>5</td><td>81</td><td>20</td><td><code>start=81&limit=20</code></td><td>81-100</td></tr>
+</table>
+
+</p></p>
+
+<b>3.8 Search by Machine Platform</b>
+
+</p></p>
+
+To search by machine platform, search with <code>machinePlatform</code>:
+
+</p></p>
+
+<pre>
+curl -X GET -H "Authorization: Bearer {token_value}" "https://pam.sec.ibm.com/credentials-api/credentials/?machinePlatform=Cisco+ASA&start=1&limit=100"
+</pre>
+
+</p></p>
+
+<b>3.9 Search by Folder Name</b>
+
+</p></p>
+
+To search by folder name, search with <code>folderName</code>:
+
+</p></p>
+
+<pre>
+curl -X GET -H "Authorization: Bearer {token_value}" "https://pam.sec.ibm.com/credentials-api/credentials/?folderName=P000003179&start=1&limit=10"
+</pre>
+
+</p></p>
+
+<b>3.10 Search Full-Text</b>
+
+</p></p>
+To perform full-text across all credential field values, search using any template field name, for example <code>HostIP</code>:
+
+</p></p>
+
+<pre>
+curl -X GET -H "Authorization: Bearer {token_value}" "https://pam.sec.ibm.com/credentials-api/credentials/?HostIP=127.0.0.1&start=1&limit=20"
+</pre>
+
+<b>Note:</b> All search examples above support Basic Authentication.
+
+<h4 class="uk-h4 tm-heading-fragment">4. Credentials Create</h4>
+
+To create credentials, the API allows for a pre-populated template to be retrieved and then filled-in with credential
+data, and a password value, to be on-boarded programmatically.
+
+</p></p>
+
+<b>4.1 GET Template</b>
+
+</p></p>
+
+For example, to get a template for a Dynamic Credential, specify <code>autoChangeEnabled=true</code> and <code>checkOutEnabled=true</code>.
+Include the <code>templateName</code> and <code>folderName</code> parameters, to pre-populate the template with <code>Id</code> values
+for these fields:
+
+<pre>
+curl -X GET -u 'admin\username:password' "https://pam.sec.ibm.com/credentials-api/credentials/template?templateName=MSS+QRadar&folderName=Dynamic&autoChangeEnabled=true&checkOutEnabled=true"
+</pre>
+
+<b>4.2 Sample Response</b>
+
+</p></p>
+
+<pre>
+{
+  "secretTemplateId": 1234,
+  "folderId": 3000,
+  "autoChangeEnabled": false,
+  "checkOutEnabled": false,
+  "HostName": "",
+  "LoginName": "",
+  "Password": "",
+  "LoginType": "",
+  "CustomerName": "",
+  "CustomerId": "",
+  "HostIP": "",
+  "MachinePlatform": "",
+  "OperatingSystem": "",
+  "DeviceId": "",
+  "LoginId": ""
+}
+</pre>
+
+<b>4.3 POST Credential</b>
+
+</p></p>
+
+The template may then be filled-in and sent in a POST request to the <code>/credentials</code> endpoint:
+
+</p></p>
+
+<pre>
+curl -X POST -u 'admin\username:password' "https://pam.sec.ibm.com/credentials-api/credentials/"
+</pre>
+
+<pre>
+{
+  "secretTemplateId": 200,
+  "folderId": 3000,
+  "autoChangeEnabled": true,
+  "checkOutEnabled": true,
+  "HostName": "linux-host",
+  "LoginName": "root",
+  "Password": "abc123",
+  "LoginType": "Root",
+  "CustomerName": "Acme",
+  "CustomerId": "CID001287",
+  "HostIP": "127.0.0.1",
+  "MachinePlatform": "Linux",
+  "OperatingSystem": "RedHat",
+  "DeviceId": "PR0000000012345",
+  "LoginId": "STG000000030702"
+}
+</pre>
+
+<b>4.4 Sample Response</b>
+
+<pre>
+{
+  "id": 100
+  "secretTemplateId": 200,
+  "folderId": 3000,
+  "autoChangeEnabled": true,
+  "checkOutEnabled": true,
+  "HostName": "linux-host",
+  "LoginName": "root",
+  "Password": "abc123",
+  "LoginType": "Root",
+  "CustomerName": "Acme",
+  "CustomerId": "CID001287",
+  "HostIP": "127.0.0.1",
+  "MachinePlatform": "Linux",
+  "OperatingSystem": "RedHat",
+  "DeviceId": "PR0000000012345",
+  "LoginId": "STG000000030702"
+}
+</pre>
+
+<b>Note:</b> In this sample, a credential <code>id</code> with a value <code>100</code> is returned from the successful
+POST operation that creates the credential.
+
+<h4 class="uk-h4 tm-heading-fragment">5. Credentials Update</h4>
+
+To perform updates to credentials, use PUT.
+
+</p></p>
+
+<b>5.1 PUT Credential</b>
+
+<pre>
+curl -X PUT -u 'admin\username:password' "https://pam.sec.ibm.com/credentials-api/credentials/?id=100" -d '{payload}'
+</pre>
+
+<b>5.2 Sample Payload</b>
+
+</p></p>
+
+<b>Note:</b> In this sample, only the Password value is updated via a PUT request.
+
+<pre>
+{
+  "Password": "secret123abc"
+}
+</pre>
+
+<b>5.3 Sample Response</b>
+
+<pre>
+{
+  "message": "Credential updated successfully."
+}
+</pre>
+
+</p></p>
+
+<b>5.4 Sample Payload</b>
+
+</p></p>
+
+<b>Note:</b> In this sample, both the HostName and HostIP values are updated via a PUT request.
+
+<pre>
+{
+  "HostName": "linux-host-prd",
+  "HostIP": "127.0.0.9"
+}
+</pre>
+
+<b>5.5 Sample Response</b>
+
+<pre>
+{
+  "message": "Credential updated successfully."
+}
+</pre>
+
+<h4 class="uk-h4 tm-heading-fragment">6. Credentials Check-Out / Check-In</h4>
+
+For credentials whose passwords have a lifecycle, POST <code>/check-in</code> and <code>/check-out</code> may be used.
+A <code>/check-out</code> request provides the caller with <i>exclusive use</i> of a credential until <code>/check-in</code>.
+
+</p></p>
+
+<b>6.1 Check-Out Credential</b>
+
+<pre>
+curl -X POST -u 'admin\username:password' "https://pam.sec.ibm.com/credentials-api/credentials/100/check-out"
+</pre>
+
+<b>6.2. Sample Response</b>
+
+<pre>
+{
+  "id": 100
+  "secretTemplateId": 200,
+  "folderId": 3000,
+  "autoChangeEnabled": true,
+  "checkOutEnabled": true,
+  "HostName": "linux-host",
+  "LoginName": "root",
+  "Password": "abc123",
+  "LoginType": "Root",
+  "CustomerName": "Acme",
+  "CustomerId": "CID001287",
+  "HostIP": "127.0.0.1",
+  "MachinePlatform": "Linux",
+  "OperatingSystem": "RedHat",
+  "DeviceId": "PR0000000012345",
+  "LoginId": "STG000000030702"
+  "checkOutUserDisplayName": "Joe User",
+  "checkOutUserId": username,
+  "checkedOut": true
+}
+</pre>
+
+<b>Note:</b> A password value is included in the response payload, and <code>checkedOut</code> = true.
+
+</p></p>
+
+<b>6.3 Check-In Credential</b>
+
+<pre>
+curl -X POST -u 'admin\username:password' "https://pam.sec.ibm.com/credentials-api/credentials/100/check-in"
+</pre>
+
+
+<h4 class="uk-h4 tm-heading-fragment">7. Credentials Delete</h4>
+
+To delete a credential, use DELETE.
+
+</p></p>
+
+<b>7.1 Delete Credential</b>
+
+<pre>
+curl -X DELETE -u 'admin\username:password' "https://pam.sec.ibm.com/credentials-api/credentials/100"
+</pre>
+
+</p></p>
+
+<b>7.2 Sample Response</b>
+
+<pre>
+{
+  "CredentialId": "100 is deleted successfully."
+}
+</pre>
+
+<b>Note:</b> Deletion of a credential is permanent and cannot be restored.
+
+</p></p></p></p>
+
+</div>
+</div>
+</div>
+
+</body>
+</html>

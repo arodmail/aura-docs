@@ -1,0 +1,113 @@
+<h2 class="uk-h2">Password Change</h2><script>if (document = top) window.location.href = "../index.html";</script>
+
+<div>By Alex Rodriguez | DRAFT </div>
+
+</p></p>
+
+To allow privileged access for analysts and other users, Credentials Manager provides a web user interface to search,
+sort, and check-out/check-in dynamic and controlled credentials. Credentials can be used securely by analysts to access
+a customer's device, asset, application, operating system, cloud-hosted workload, or other digital platform resource.
+
+</p></p>
+
+Both dynamic and controlled credentials are enabled for check-out, but only dynamic credentials support automated
+password rotation through an RPC upon check-in or expiration. To satisfy compliance requirements, controlled credentials must change after
+each use, upon check-in or expiration, but are changed on a managed endpoint through a manual procedure.
+
+</p></p>
+
+<h3 class="uk-h3 tm-heading-fragment">Automated Password Change</h3>
+
+When the password value of a <i>dynamic</i> credential expires, it changes automatically by a Remote Password Changer (RPC).
+It also changes when it is checked in. As these events happen, a transition to a different, strong password
+value defines a password lifecycle. The following diagram depicts the step-by-step flow for password check-out, use of
+a password value, followed by automated password change by an RPC upon check-in.
+
+<div align="center" style="padding-top: 15px;padding-bottom: 15px;"><img src="images/auto-password-change.png" width=""/></div>
+
+An audit log is created and retained to capture who checked out a credential, when, and for what device, customer asset or
+managed endpoint.
+
+<h3 class="uk-h3 tm-heading-fragment">Manual Password Change</h3>
+
+For passwords that cannot be changed automatically, through an RPC or some equivalent automated change mechanism, a
+process to change passwords manually is available. Credentials Manager exposes both dynamic and controlled credentials
+to analysts, but the process by which controlled credentials are updated manually requires a Change Request Ticket and
+human intervention. The following diagram depicts the step-by-step flow for controlled credential check-out, use of a
+password value, followed by manual password change by a DevMon team member upon check-in.
+
+<div align="center" style="padding-top: 15px;padding-bottom: 15px;"><img src="images/manual-password-change.png" width=""/></div>
+
+
+<h4 class="uk-h4 tm-heading-fragment">Manual Change Process Flow</h4>
+
+When Credentials API receives a request to check-in a controlled credential:
+
+</p></p>
+
+<ol>
+    <li>A strong password value is generated</li>
+    <li>The password value of the credential is updated with a new value</li>
+    <li>The credential is checked-in, but only partially, "Pending" successful update on the endpoint*</li>
+    <li>Creates a Change Request Ticket for the DevMon team to update the endpoint</li>
+    <li>An audit log is created and retained to capture who checked-in the credential, when, and for what endpoint.</li>
+</ol>
+
+</p></p>
+
+A Change Request Ticket created is routed to the DevMon team for manual password change:
+
+</p></p>
+
+<ol>
+    <li>DevMon team member logs into Credentials Manager to complete the check-in process</li>
+    <li>Credentials Manager only shows "Pending" credentials to DevMon team members (SS_DEVMON AD Group)</li>
+    <li>Both previous and next password values are displayed by Credentials Manager, used to update the managed endpoint</li>
+    <li>The "Pending" credential is checked-in through Credentials Manager and its status changes to "Available".</li>
+    <li>The Change Request Ticket is Closed</li>
+</ol>
+
+</p></p>
+
+<h3 class="uk-h3 tm-heading-fragment">Password Reset</h3>
+
+For passwords that cannot be reset automatically prior to expiration, through an RPC or some equivalent automated change
+mechanism, a process to reset passwords manually is available. The following diagram depicts the step-by-step flow for
+controlled credential reset, that starts with a Change Request Ticket, followed by manual password reset
+by a DevMon team member.
+
+<div align="center" style="padding-top: 15px;padding-bottom: 15px;"><img src="images/expired-password-reset.png" width=""/></div>
+
+<h4 class="uk-h4 tm-heading-fragment">Manual Reset Process Flow</h4>
+
+When a credentials expires it appears under the "Expired" tab in Credentials Manager:
+
+</p></p>
+
+<ol>
+    <li>A Change Request Ticket is submitted for the DevMon team to reset the password on the endpoint</li>
+    <li>A strong password value is generated</li>
+    <li>The "next" password value of the credential is updated with a new value</li>
+</ol>
+
+</p></p>
+
+A Change Request Ticket created is routed to the DevMon team for manual password reset:
+
+</p></p>
+
+<ol>
+    <li>DevMon team member logs into Credentials Manager to complete the reset process</li>
+    <li>Credentials Manager only shows "Reset" credentials to DevMon team members (SS_DEVMON AD Group)</li>
+    <li>Both previous and next password values are displayed by Credentials Manager, used to update the managed endpoint</li>
+    <li>The "Reset" credential is reset through Credentials Manager and its status changes to "Available".</li>
+    <li>An audit log is created and retained to capture who reset the credential, when, and for what endpoint.</li>
+    <li>The Change Request Ticket is Closed</li>
+</ol>
+
+</div>
+</div>
+</div>
+
+</body>
+</html>

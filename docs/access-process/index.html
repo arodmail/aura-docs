@@ -1,0 +1,172 @@
+
+<h2 class="uk-h2">Access Request Process</h2><script>if (document = top) window.location.href = "../index.html";</script>
+
+<div>By Alex Rodriguez | Published December 31, 2021 </div>
+
+</p></p>
+
+Gaining access to Aura is a simple 2-step process that begins with the submission of a User MAC Request in Remedy. There
+are two types of access requests: A) Access for User and B) Access for Application.
+
+<h4 class="uk-h4 tm-heading-fragment">A. Request Access For User</h4>
+
+</p></p>
+
+To request access for an AD user to call <a class="uk-link-muted" target="_blank" href="https://pam.sec.ibm.com/credentials-api/swagger-ui/index.html?url=https://pam.sec.ibm.com/credentials-api/v3/api-docs/">Credentials API</a>
+and/or to access the Secret Server web console, it is required, for compliance and audit purposes, for a 1LN manager to submit
+and/or approve a User MAC Request in Remedy.
+
+<div align="center" style="padding-top: 15px;padding-bottom: 15px;"><img src="images/access-process-user.png" width="950"/></div>
+
+Process Flow
+
+<ul>
+    <li>User MAC Request is submitted</li>
+    <li>User MAC Request is approved or rejected</li>
+    <li>An AD user is either created or added to an AD group</li>
+    <li>The AD group the user belongs to is sync'd into Secret Server</li>
+    <li>Access is verified and access request is closed</li>
+</ul>
+
+If the AD account is to be used <i>programmatically</i> to call Credentials API:
+
+<ul>
+  <li>The user's account in Secret Server is converted to an Application Account and enabled/activated</li>
+  <li>The AD group the user belongs to is granted permissions to a Folder that contains the secrets the user needs</li>
+</ul>
+
+If the AD account is to be used <i>administratively</i> to login to Secret Server web console:
+
+<ul>
+    <li>The user's account in Secret Server is enabled/activated (1 SS user license is allocated)</li>
+    <li>The AD Group the user belongs to is granted the "Offering Enablement" Role</li>
+</ul>
+
+<h4 class="uk-h4 tm-heading-fragment">B. Request Access For Application</h4>
+
+</p></p>
+
+To request access for an AD functional account to use Credentials API, a 1LN manager submits and/or approves a User MAC
+Request in Remedy, and the template Jira Story <a class="uk-link-muted" href="https://jira.sec.ibm.com/browse/XPS-47867" target="_blank">XPS-47867</a>
+is cloned to add the AD account to Hashicorp Vault.
+
+<div align="center" style="padding-top: 15px;padding-bottom: 15px;"><img src="images/access-process-application.png" width="950"/></div>
+
+Process Flow
+
+<ul>
+    <li>User MAC Request is submitted</li>
+    <li>User MAC Request is approved or rejected</li>
+    <li>An AD functional account is either created or added to an AD group</li>
+    <li>The AD group the AD account belongs to is sync'd into Secret Server</li>
+    <li>The AD account in Secret Server is converted to an Application Account and activated</li>
+    <li>The AD group the functional account belongs to is granted permissions to a Folder that contains the secrets the account needs</li>
+    <li>The template Jira Story <a class="uk-link-muted" href="https://jira.sec.ibm.com/browse/XPS-47867" target="_blank">XPS-47867</a>
+        is cloned to add the AD account to Hashicorp Vault</li>
+    <li>Microservices and other applications may then vault-inject the AD username/password from Hashicorp Vault</li>
+    <li>Access is verified and access request is closed</li>
+</ul>
+
+<h4 class="uk-h4 tm-heading-fragment">C. Secret Server Procedure</h4>
+
+</p>
+
+If one or more new AD groups are created, then in Secret Server the following detailed steps are completed by a <b>Front
+    Line Support Team</b> member to grant the access requested in the dev, stg, prod and/or other Secret Server environment
+for which access is requested:
+
+</p>
+
+Login to Secret Server web console as Secret Server Administrator:
+
+</p>
+
+1. Sync AD Groups
+
+<ul>
+    <li>Admin > Directory Services > <code>iss.local</code></li>
+    <li>Groups > Edit > Select Groups > e.g., <code>SS_*</code></li>
+    <li>Check the AD Groups to Sync > Save</li>
+</ul>
+
+2. Convert and/or Enable Accounts
+
+After AD sync:
+
+<ul>
+    <li>Admin > Users > Include Disabled = Yes</li>
+    <li>For each user in new group(s):</li>
+    <li>Application Account = Yes or No</li>
+    <li>Enabled = Yes</li>
+</ul>
+
+<b>Note about Application Account Yes or No</b>
+
+<ul>
+    <li>Application Account = Yes is for <i>programmatic access</i> to Credentials API</li>
+    <li>Application Account = No is for <i>administrative access</i> to Secret Server web console (1 SS user license is allocated)</li>
+</ul>
+
+3. Grant Folder Permissions to Group
+
+<ul>
+    <li>Right-click on Folder to change Permissions.
+    <li>For example, right-click  "Static" Folder > Edit Folder</li>
+    <li>Folder Permissions > Edit</li>
+    <li>Search for groups > Check each</li>
+    <li>Folder Permissions = View (or other)</li>
+    <li>Secret Permissions = Edit (or other)</li>
+    <li>Save</li>
+    <li>Done</li>
+</ul>
+
+4. Optional Add Role to Group
+
+</p>
+
+Consistent with the principle of least privilege, to restrict what <i>administrative</i> users can do when they login to the
+Secret Server web console, an <i>Offering Enablement</i> Role provides role-specific Permissions:
+
+<ul>
+    <li>Admin > Groups > Click on the group(s) sync'd in Step A.
+    <li>Go to "Roles" tab > Edit</li>
+    <li>Check "Offering Enablement" > Save</li>
+</ul>
+
+Permissions granted to the <i>Offering Enablement</i> Role in Secret Server include but are not limited to:
+
+<ul>
+    <li>Add Secret</li>
+    <li>Administer Custom Password Requirements</li>
+    <li>Administer Discovery</li>
+    <li>Administer Folders</li>
+    <li>Administer Password Requirements</li>
+    <li>Administer Remote Password Changing</li>
+    <li>Administer Scripts</li>
+    <li>Administer Secret Templates</li>
+    <li>Administer Template Custom Columns</li>
+    <li>Advanced Import</li>
+    <li>Copy Secret</li>
+    <li>Delete Secret</li>
+    <li>Edit Secret</li>
+    <li>Erase Secret</li>
+    <li>Own Secret</li>
+    <li>View Advanced Secret Options</li>
+    <li>View Deleted Secrets</li>
+    <li>View Discovery</li>
+    <li>View Export</li>
+    <li>View Folders</li>
+    <li>View Secret</li>
+</ul>
+
+</p>
+
+Once access is granted following the processes and procedure above, the Aura <i>Authorization Model</i> enforces access control.
+For an explanation of how authorization works in Aura, see <a class="uk-link-muted"  href="authorization">Authorization</a>.
+
+</div>
+</div>
+</div>
+
+</body>
+</html>

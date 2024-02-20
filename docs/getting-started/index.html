@@ -1,0 +1,166 @@
+<h2 class="uk-h2">Getting Started</h2><script>if (document = top) window.location.href = "../index.html";</script>
+
+<div>By Alex Rodriguez | Published August 31, 2021 </div>
+
+</p></p>
+
+AURA Docs is a set of documentation intended to be used by teams as a step-by-step guide for PAM on-boarding projects.
+It's focused on a workflow. A goal is to define a process through which AURA can be integrated
+with a customer's Digital Platform. The documentation is divided into five sections: 1) Overview, 2) Workflow,
+3) Developer, 4) What's New, and 5) FAQ.
+
+</p></p>
+
+<h3 class="uk-h3 tm-heading-fragment">PAM Designer Workflow</h3>
+
+The Privileged Access Management (PAM) Designer Workflow starts with the discovery of a Digital Platform. In this step,
+a platform is examined from the perspective of the access required by an MSSP to provide services to customers.
+
+</p></p></p></p>
+
+<div align="center" style="padding-top: 15px;"><img src="images/pam-workflow.png" width="750"/></div>
+
+</p></p></p></p>
+
+<h3>What is a Digital Platform?</h3>
+
+It's a broader concept than machine platform in the sense that a Digital Platform is any environment that hosts workloads for
+customers. Digital platform includes machines, devices, applications, OSes, cloud-hosted resources, and other customer assets
+that are exposed as manageable PAM endpoints. Digital platforms include software and technology used in business operations
+and IT systems. A digital platform often serves as a company's backbone for operations and customer engagement. Services,
+solutions, tools, systems and interfaces comprise a digital platform.
+
+<h3>What is AURA?</h3>
+
+AURA stands for <i>Access to User Resources Architecture</i>, an integrated system that provides privileged access management
+for digital platforms. As an integration of cooperating components, a common goal of the system is to provision,
+monitor, and audit the use of elevated credentials. AURA includes a highly secure credentials vault to store
+credentials that grant the access needed by an MSSP to perform routine, authorized activities in support of business-critical
+operations, in a secure manner.
+
+</p></p></p></p>
+
+<div align="center" style="padding-top: 10px; padding-bottom: 20px;"><img src="images/aura-system.png" width="75%" ></div>
+
+</p></p></p></p>
+
+<b>Credentials Manager</b> - A web application, provides check-in/check-out. Designed for SOC Analysts.
+
+</p>
+
+<b>Core APIs</b> - Microservices to vault and retrieve credentials via REST.
+
+</p>
+
+<b>Secret Server</b> - An easy-to-use, full-featured PAM solution from Thycotic.
+
+</p>
+
+<b>Credentials Vault</b> - A highly scalable, encrypted storage facility included with Secret Server.
+
+</p>
+
+<h3>Why a workflow?</h3>
+
+<h4>Sets Clear Expectations</h4>
+
+When a process is well defined and understood across the organization, it allows for project estimates to be accurate and
+realistic. Stakeholders value knowing exactly what to expect from the process and when to expect it,
+eliminating needless misunderstandings.
+
+<h4>Puts Stakeholders at Ease</h4>
+
+Stakeholders may be unaware of everything it takes to on-board a customer into AURA.
+With a clear process in place, stakeholders can know exactly where they are in the various phases of a PAM project.
+
+<h4>Increases the Likelihood of Success</h4>
+
+All steps of an on-boarding workflow need serious consideration and a good process accounts for everything. Without thought
+given to a solid design or no discovery and research to support it, projects are off to a precarious start, with an increased
+risk of failure.
+
+<h3 class="uk-h3 tm-heading-fragment">AURA Environments</h3>
+
+<div align="center" style="padding-top: 10px; padding-bottom: 20px;"><img src="images/pam-workflow-envs.png" width="85%" ></div>
+
+
+<h4 class="uk-h4 tm-heading-fragment">Workflow Steps</h4>
+
+<h4>Discover</h4>
+
+Step one in the worklow is <a class="uk-link-muted" href="discover">Discover</a>, an assessment of a digital platform focused on
+credentials to manage. Discovery creates or gains access to a Test Environment, an instance of the digital platform.
+
+</p></p>
+
+<h4>Design</h4>
+
+The <a class="uk-link-muted" href="design">Design</a> stage of the workflow designs secret templates and remote password changers (RPCs). During
+design, decisions are made about how to represent a credential to manage, and how to change passwords remotely.
+
+<h4>Implement</h4>
+
+The <a class="uk-link-muted" href="implement">Implement</a> step takes design input to create secret templates, remote password changers, as well
+as secrets (credentials) in the PAM system (Secret Server). Implementation uses the AURA development environment.
+
+<h4>Validate</h4>
+
+In the <a class="uk-link-muted" href="validate">Validate</a> stage of the workflow, secret templates are exported from a development environment and
+then imported into a staging environment for end-to-end testing and verification.
+
+<h4>Deploy</h4>
+
+The <a class="uk-link-muted" href="deploy">Deploy</a> stage goes live by moving credentials into a production environment for authorized use
+by applications and users. Once credentials from a customer's digital platform are moved into production, and configured
+based on access requirements, then the PAM on-boarding workflow is complete.
+
+</p></p>
+
+<h3 class="uk-h3 tm-heading-fragment">Credential Categories</h3>
+
+Credentials in AURA can be distinguished by category. One of the main differences between credential categories is the
+expected consumer. While <i>static</i> and <i>functional</i> credentials are mostly consumed by applications for
+integration and automation purposes, <i>dynamic</i> and <i>controlled</i> credentials are expected to be consumed by
+people for administrative purposes. Functional, dynamic, and controlled credentials are rotated by RPCs but on different
+intervals. Dynamic and controlled credentials rotate upon use (upon check-in), and functional credentials rotate
+yearly, automatically when they expire. Static credentials are not expected to change.
+
+</p></p></p></p>
+
+<div align="center" style="padding-top: 15px;padding-bottom: 50px;"><img src="images/credential-categories.png" width="850"/></div>
+
+A credential from a digital platform to be managed by AURA, must belong to one of the categories:
+
+</p>
+
+<table class="table">
+    <tr>
+        <th>&nbsp;</th><th>Category</th><th>Description</th><th>RPC Required</th><th>Auto Change</th><th>Check-Out Enabled</th><th>Credentials Manager</th>
+    </tr>
+    <tr><td>1</td><td>Dynamic</td><td>Enabled for check-in/out, supports automated remote password rotation </td>
+            <td>Yes</td><td>Yes</td><td>Yes</td><td>Yes</td></tr>
+    <tr><td>2</td><td>Static</td><td>A vaulted credential, does not change frequently or automatically </td>
+            <td>No</td><td>No</td><td>No</td><td>No</td></tr>
+    <tr><td>3</td><td>Controlled</td><td>Stored securely, supports manual password rotation </td>
+        <td>No</td><td>No</td><td>Yes</td><td>Yes</td></tr>
+    <tr><td>4</td><td>Functional</td><td>Like static, but supports automated remote password rotation </td>
+            <td>Yes</td><td>Yes</td><td>No</td><td>No</td></tr>
+</table>
+
+</p>
+
+<b>Note:</b> <i>Auto Change</i> automatically initiates a password change after a Credential expires.
+
+<h3 class="uk-h3 tm-heading-fragment">Adapt It</h3>
+
+There are many different ways of approaching new projects. This is a proposed PAM process, but it encourages teams to
+think about and tailor the process into something that works for them. There is no magic one-size-fits-all way to get
+through a project and achieve awesome results every time. Good design processes are both strong and flexible. This one
+is intended to allow teams to take on any PAM on-boarding challenge and to increase their chances of success by using the
+workflow steps as guides, not exact recipes.
+
+</div>
+</div>
+
+</body>
+</html>

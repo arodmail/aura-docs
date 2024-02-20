@@ -1,0 +1,306 @@
+<h2 class="uk-h2">Discover</h2><script>if (document = top) window.location.href = "../index.html";</script>
+
+<div>By Alex Rodriguez | Published August 31, 2021 </div>
+
+</p></p>
+
+The discovery step of the PAM on-boarding workflow begins with an assessment of a digital platform, that focuses on
+credentials to manage and the access requirements for an MSSP. This assessment explores the access needed, establishes a
+purpose for credentials, and examines a remote password change mechanism supported by the digital platform.
+
+</p>
+
+The discovery step completes 5 tasks:
+
+<ol>
+    <li>Test Environment
+    <li>Credentials Inventory
+    <li>Access Requirements
+    <li>Password Complexity
+    <li>Remote Password Change Mechanism
+</ol>
+
+</p>
+
+<h4 class="uk-h4 tm-heading-fragment">1. Test Environment</h4>
+
+</p>
+
+Gaining access to or setting up a test environment is a recommended first task to begin discovery. A test environment
+supports two discovery goals: to explore the digital platform's access control model, and to test a privileged access
+management approach in a working environment.
+
+</p>
+
+Any of the following assets may become a test environment:
+
+<ul>
+    <li>Virtual Machine</li>
+    <li>Bare-metal server hardware</li>
+    <li>Cloud-hosted resource</li>
+    <li>Lab device</li>
+    <li>Small network of any of the above</li>
+    <li>Other</li>
+</ul>
+
+To support discovery goals, a test environment should be representative of a customer's digital platform to be managed
+by AURA.
+
+</p>
+
+<b>Outcome of Task</b>
+
+</p>
+
+<ul><li>Gain access to or setup a working digital platform instance for discovery and testing purposes.</li></ul>
+
+</p>
+
+<h4 class="uk-h4 tm-heading-fragment">2. Credentials Inventory</h4>
+
+</p>
+
+What elevated credentials are present on a host? In many cases, a <i>superuser</i> may exist, such as "root",
+"admin", or "administrator", which are special accounts used for system administration purposes. These are user accounts
+capable of making unrestricted, system-wide changes. Other, ordinary accounts granted less than superuser privileges,
+in some cases exist to run processes as functional accounts. This step in the assessment of a digital platform takes
+inventory of special and ordinary accounts already present, that need to come under management by AURA.
+
+</p>
+
+<b>Outcome of Task</b>
+
+</p>
+
+<ul>
+    <li>Discover and compile a list of credentials (usernames and passwords) that exist on the host, OS, application,
+        device, or customer asset to manage.
+    </li>
+</ul>
+
+
+<h4 class="uk-h4 tm-heading-fragment">2.1 Sample Credentials Inventory</h4>
+
+The following 2 accounts are identified as being present on the host or in the environment, as a standard out-of-box
+configuration. In this summary, each account is enumerated, and its purpose stated.
+
+</p>
+
+<table class="table">
+    <tr>
+        <th>Credential Name</th><th>Credential Purpose</th><th>Login Name</th><th>Access Level</th>
+    </tr>
+    <tr><td>Root</td><td>A root account used for system administration purposes</td><td>root</td><td>Administrative</td></tr>
+    <tr><td>Guest</td><td>A guest account</td><td>guest</td><td>User</td></tr>
+</table>
+
+</p>
+
+<h4 class="uk-h4 tm-heading-fragment">3. Access Requirements</h4>
+
+</p>
+
+What elevated credentials are missing or need to be created? While pre-defined credentials for different purposes are often
+included out-of-box in a digital platform, application, OS, or on a device to be managed, additional credentials often need
+to be defined and added for different monitoring and administration purposes. For example, in order to administer a device in a basic
+way, SOC Analysts often share one or more sets of credentials with admin-level privileges.
+
+</p>
+
+An assessment of access requirements during discovery provides an understanding of the digital platform from the
+perspective of an MSSP: to manage and service a host, device, or other customer asset, what access to the
+digital platform is required? What credentials and permissions granted to them allow the MSSP to provide its services?
+For example, to perform authenticated health checks on a device, a dedicated functional account is created for this purpose
+and must be granted sufficient rights or privileges within the platform to login remotely and to perform a health check.
+
+</p>
+In addition to monitoring and administration purposes, accounts may be defined and added into the digital platform for other
+purposes such as:
+
+<ul>
+    <li>Automation</li>
+    <li>Backups</li>
+    <li>Integration</li>
+    <li>Data acquisition</li>
+    <li>Auditing</li>
+</ul>
+
+</p>
+
+A credential added into the digital platform to be managed by AURA, must belong to one of the following
+4 categories:
+
+</p>
+
+<table class="table">
+    <tr>
+        <th>&nbsp;</th><th>Category</th><th>Description</th><th>RPC Required</th><th>Auto Change</th><th>Check-Out Enabled</th><th>Credentials Manager</th>
+    </tr>
+    <tr><td>1</td><td>Dynamic</td><td>Enabled for check-in/out, supports automated remote password rotation </td>
+        <td>Yes</td><td>Yes</td><td>Yes</td><td>Yes</td></tr>
+    <tr><td>2</td><td>Static</td><td>A vaulted credential, does not change frequently or automatically </td>
+        <td>No</td><td>No</td><td>No</td><td>No</td></tr>
+    <tr><td>3</td><td>Controlled</td><td>Stored securely, supports manual password rotation </td>
+        <td>No</td><td>No</td><td>Yes</td><td>Yes</td></tr>
+    <tr><td>4</td><td>Functional</td><td>Like static, but supports automated remote password rotation </td>
+        <td>Yes</td><td>Yes</td><td>No</td><td>No</td></tr>
+</table>
+
+</p>
+
+<b>Note:</b> <i>Auto Change</i> automatically initiates a password change after a Credential expires.
+
+</p>
+
+<b>Note:</b> Check-Out Enabled: <b>Yes</b>, suggests use of the credential <i>by a person</i> because it gives a person
+exclusive access to (locks) the credential until Check-In. Check-Out Enabled: <b>No</b> is almost always reserved for use
+<i>by an application</i>, or headless access to a credential.
+
+</p>
+
+<b>Outcome of Task</b>
+
+<ul>
+    <li>Create a list of credentials that are missing from the digital platform to manage.</li>
+    <li>Summarize privileges to grant to each credential (e.g., membership in a group) for automation or remote
+        administration purposes.</li>
+</ul>
+
+<h4 class="uk-h4 tm-heading-fragment">3.1 Sample Access Requirements</h4>
+
+As an example, let's say the following 4 credentials are required to be added into a digital platform for monitoring and administration
+purposes. In this summary, each account is enumerated, and its purpose established. The credential category determines if
+the password for a credential is subject to automated rotation by RPC upon use, or only vaulted securely by AURA.
+
+</p>
+
+<table class="table">
+    <tr>
+        <th>Credential Name</th><th>Credential Purpose</th><th>Credential Category</th><th>Login Name</th><th>Access Level</th>
+    </tr>
+    <tr><td>Root Login</td><td>Used for password management purposes on behalf of other users</td><td>Dynamic</td><td>svcmss</td><td>Root</td></tr>
+    <tr><td>SOC Root</td><td>Used by SOC Analysts to login for administration purposes</td><td>Dynamic</td><td>admin1</td><td>Administrative</td></tr>
+    <tr><td>SOC Root Backup</td><td>A secondary account for SOC Analysts</td><td>Dynamic</td><td>admin2</td><td>Administrative</td></tr>
+    <tr><td>Health Checker</td><td>Used by Nagios for authenticated health checks</td><td>Static</td><td>monitor-user</td><td>Read-Only</td></tr>
+    <tr><td>Backups CLI</td><td>Used to transfer backup files securely from the host</td><td>Functional</td><td>backup-user</td><td>Backups-Only</td></tr>
+</table>
+
+</p>
+
+<h4 class="uk-h4 tm-heading-fragment">4. Password Complexity</h4>
+
+</p>
+
+How strong are passwords in the digital platform? Because password strength is a requirement for most accounts, and the
+rules to generate a valid password may vary from one digital platform to another, discovery also gathers the requirements
+for account password complexity. Passwords should be strong enough to withstand a brute-force attack, such as a
+dictionary attack.
+
+</p>
+
+To defy attacks and to prevent guessing, strong passwords are based upon rules. This step in discovery provides
+an understanding of the rules that govern password complexity in the digital platform. Requirements for strong passwords
+include:
+
+</p>
+
+<table class="table">
+    <tr>
+        <th>Requirement</th><th>Description</th><th>MSS Standard</th>
+    </tr>
+    <tr>
+        <td>Minimum Length</td><td>Must be at least n characters</td><td>Must be at least 15 characters</td>
+    </tr>
+    <tr>
+        <td>Maximum Length</td><td>Must be at most n characters</td><td>Must be at most 26 characters</td>
+    </tr>
+    <tr>
+        <td>Character Set</td><td>Must contain only lower case letters, upper case letters, numbers and symbols</td>
+        <td>Categories: A through Z / a through z / 0 through 9 / ! $ # %</td>
+    </tr>
+    <tr>
+        <td>Password Rules</td><td>Must use n lower case letters, n upper case letters, at least n numbers, and n symbols</td>
+        <td>Contain characters from 3 of the 4 character set categories</td>
+    </tr>
+    <tr>
+        <td>Password History</td><td>If enforced, determines the number of unique new passwords that must be associated
+        with a user account before an old password can be reused</td><td>Number of passwords to store: 24</td>
+    </tr>
+</table>
+
+</p>
+
+<b>Outcome of Task</b>
+
+</p>
+
+<ul>
+    <li>Create a summary of the rules that govern password complexity in the digital platform.</li>
+    <li>Assess whether or not MSS Standard password rules can be enforced.</li>
+</ul>
+
+</p>
+
+<h4 class="uk-h4 tm-heading-fragment">5. Remote Password Change Mechanism</h4>
+
+</p></p>
+
+What is the remote password change mechanism supported by the digital platform? Most systems that recognize any form of
+remote login also provide a mechanism, a protocol, an API, or other means to change a password on an interactive login
+account remotely. For user accounts, changing passwords regularly (password rotation and expiration) provides assurances
+that if a password is ever disclosed to others, then it cannot be used for any length of time. PAM provides greater
+security by requiring passwords for shared accounts to change upon each use.
+
+</p>
+
+During discovery, the mechanism supported by the digital platform to change passwords remotely on privileged and ordinary
+accounts is examined and understood. Because change-password operations require that the user's current password be known
+before the change is allowed, discovery also takes into consideration how to obtain current password values from a
+credentials inventory.
+
+</p>
+
+Key questions to answer during discovery about an RPC mechanism:
+
+<ul>
+    <li>What is the network protocol used by RPC? For example, SSH or REST?</li>
+    <li>What account attributes are required to perform a password change?</li>
+    <li>Does the platform support self-service password resets?</li>
+    <li>Are password changes only allowed to be performed by a "superuser" account?</li>
+</ul>
+
+<b>Outcome of Task</b>
+
+<ul>
+    <li>Answer key questions</li>
+    <li>Successfully perform a remote password change on an account</li>
+    <li>Take notes on the RPC mechanism, use the test environment, capture the commands executed or the APIs called</li>
+</ul>
+
+<h3 class="uk-h3 tm-heading-fragment">6. Discovery Summary</h3>
+
+The following outcomes are expected from discovery tasks:
+
+<ol>
+    <li>Gain access to or setup a working digital platform instance for PAM tests</li>
+    <li>Compile a list of credentials (usernames and passwords) that exist in the digital platform. </li>
+    <li>Create a list of credentials (usernames and account types) that are missing from
+        the digital platform based upon access requirements.</li>
+    <li>Create a summary of the rules that govern password complexity in the digital platform. </li>
+    <li>Answer key questions about an RPC mechanism supported by the digital platform, and successfully perform a remote
+        password change on an account.</li>
+</ol>
+
+<h3 class="uk-h3 tm-heading-fragment">7. Next Step</h3>
+
+Once discovery is complete, PAM designers may move to the next step in the PAM on-boarding workflow:
+<a class="uk-link-muted"  href="design">Design</a>.
+
+</p></p>
+
+</div>
+</div>
+</div>
+
+</body>
+</html>

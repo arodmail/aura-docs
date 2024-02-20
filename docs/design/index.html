@@ -1,0 +1,321 @@
+<h2 class="uk-h2">Design</h2><script>if (document = top) window.location.href = "../index.html";</script>
+
+<div>By Alex Rodriguez | Published August 31, 2021 </div>
+
+</p></p>
+
+The design step of the PAM on-boarding workflow takes input from <a class="uk-link-muted"  href="discover">Discovery</a> to produce a
+design for: 1) Secret Template and 2) Remote Password Changer (RPC). These tasks are integral to the on-boarding
+workflow because the designs solve fundamental on-boarding problems. Greater precision in the design step increases the
+likelihood of success in the later steps of the workflow.
+
+</p>
+
+<h3 class="uk-h3 tm-heading-fragment">1. Secret Template Design</h3>
+
+A template in Secret Server is like a schema for a secret. As such, a secret template defines fields
+and field types to represent and to store a secret
+
+</p></p>
+
+The following <i>standard</i> fields should be included in a secret template:
+
+</p></p>
+
+<table class="table">
+    <tr>
+        <th></th><th>Field Name</th><th>Field Type</th><th>Field Description</th><th>Required</th>
+    </tr>
+    <tr><td>1</td><td>HostIP</td><td>Text</td><td>IP address of the digital platform, device, or host under management</td><td>For RPC</td></tr>
+    <tr><td>2</td><td>LoginName</td><td>Text</td><td>A username for a credential</td><td>Yes</td></tr>
+    <tr><td>3</td><td>Password</td><td>Password</td><td>The password associated with the LoginName</td><td>Yes</td></tr>
+    <tr><td>4</td><td>CustomerId</td><td>Text</td><td>A unique ID assigned to the customer of the digital platform</td><td>Yes</td></tr>
+    <tr><td>5</td><td>DeviceId</td><td>Text</td><td>A unique ID assigned to an instance of the digital platform</td><td>Yes</td></tr>
+    <tr><td>6</td><td>MachinePlatform</td><td>Text</td><td>A name to identify the digital platform</td><td>Yes</td></tr>
+    <tr><td>7</td><td>Hostname</td><td>Text</td><td>A network name of the host for the credential</td><td>For WebUI</td></tr>
+    <tr><td>8</td><td>CustomerName</td><td>Text</td><td>Customer name</td><td>For WebUI</td></tr>
+    <tr><td>9</td><td>OperatingSystem</td><td>Text</td><td>The operating system of the host (if applicable)</td><td>No</td></tr>
+</table>
+
+</p>
+
+<h4 class="uk-h3 tm-heading-fragment">1.1 Template Design Considerations</h4>
+
+For AURA (through Secret Server) to manage credentials on a digital platform, device, host, OS, application, or other
+remote customer asset, a secret template can be associated with an RPC, and a "heartbeat" can be enabled. A heartbeat
+tests a login to verify, on an interval, that the password value stored in a secret matches the password value on the
+target host. A heartbeat doesn't make sense for static or controlled credentials because they do not have a connection
+to a remote host.
+
+</p>
+
+Other design considerations for templates include:
+
+</p>
+
+<b>Custom Fields for RPC</b>
+
+</p>
+
+When secret templates are designed for dynamic or functional credentials, they are each associated with a remote password
+changer because, by definition, the password value for dynamic credentials must change automatically after each use
+(upon check-in) and for functional credentials the password value must change on a regular interval (upon expiration).
+As such, a secret template for dynamic credentials, or functional, must define a 1:1 relationship to an RPC.
+
+</p>
+
+A custom field in a secret template may be given to an RPC as a variable. A design for a secret template, then, may
+combine standard fields with custom fields that are determined in discovery as needed to perform a password change in the
+digital platform. For example:
+
+</p>
+
+<table class="table">
+    <tr>
+        <th></th><th>Field Name</th><th>Field Type</th><th>Field Description</th><th>Required</th>
+    </tr>
+    <tr><td>10</td><td>LoginType</td><td>Text</td><td>One of <code>Root</code>, <code>Web</code>, or <code>CLI</code></td><td>No</td></tr>
+</table>
+
+</p>
+
+A secret template that is extended like this to include a custom "LoginType" field, may give the field value to the RPC.
+This allows password changes to be performed by the RPC in a slightly different way for <code>Root</code> accounts, for
+example, than for <code>CLI</code> accounts. In cases where a different sequence of commands must be executed by an RPC
+to change the password, based upon LoginType, a secret template may be designed with one or more custom fields to be
+used as input to an RPC.
+
+</p>
+
+<b>Custom Fields for Full-Text Search</b>
+
+</p>
+
+Other use cases in which to expand a secret template with custom fields include the need to retrieve credentials by specific
+field values (full-text searches), above and beyond the standard fields, through the Credentials API for platform
+integration purposes.
+
+</p>
+
+<table class="table">
+    <tr>
+        <th></th><th>Field Name</th><th>Field Type</th><th>Field Description</th><th>Required</th>
+    </tr>
+    <tr><td>11</td><td>Level</td><td>Text</td><td>One of <code>One</code>, <code>Two</code>, or <code>Three</code></td><td>No</td></tr>
+</table>
+
+</p>
+
+In this example, a secret template is expanded to include a "Level" field that indicates a level of access
+granted to the credential in the digital platform. In this overly simplified example, a secret template design provides
+applications that are authorized to retrieve credentials from the Credentials API with options to retrieve using one of
+the three or a combination of possible values for this custom field: <code>One</code>, <code>Two</code>, or
+<code>Three</code>
+
+</p>
+
+<b>Relationship to Password Complexity Rules</b>
+
+</p>
+
+A secret template defines a schema for a credential also in the sense that it establishes a 1:1 relationship to password
+complexity rules. A secret template may be associated with unique password rules in case these are slightly different
+from one digital platform to another, and as such, the password value <i>generated</i> for a secret created from the
+template will follow these rules, as defined.
+
+</p>
+
+<b>Outcome of Task</b>
+
+<ul>
+    <li>Define fields and field types to represent and to store a secret: design a Secret Template</li>
+    <li>Determine the need for custom fields for RPC and/or for full-text search via Credentials API</li>
+    <li>Compare password complexity rules discovered in the digital platform to built-in Secret Server rules</li>
+</ul>
+
+<h3 class="uk-h3 tm-heading-fragment">2. Remote Password Changer (RPC) Design</h3>
+
+For credentials that require passwords to change automatically, a remote password changer provides a mechanism to
+establish a connection to the digital platform and to change password values on credentials remotely. A remote password
+changer is usually associated with a specific secret template. The second step during design in the PAM on-boarding
+workflow determines an approach to provide automated remote password change, for credentials that require it.
+
+</p>
+
+There are 3 possible approaches to take:
+
+</p>
+
+<b>A. Built-In</b> - Select a built-in, out-of-box RPC from Secret Server</br>
+<b>B. Custom</b> - Define an algorithm, commands, and error handling for a custom RPC</br>
+<b>C. PowerShell</b> - Write a script, for password changes that call for loops and multi-condition if-then-else statements
+
+<h4 class="uk-h4 tm-heading-fragment">A. Built-In RPC</h4>
+
+The most convenient approach is to select a built-in RPC. The following remote password changers are available
+to be selected for the following digital platforms, applications, operating systems, cloud-hosted resources, device types
+and/or hosts:
+
+</p>
+
+<table class="table">
+    <tr>
+        <th></th><th>Built-In RPC</th>
+    </tr>
+    <tr><td>1</td><td>Active Directory Account</td></tr>
+    <tr><td>2</td><td>Amazon IAM Console Password Privileged Account</td></tr>
+    <tr><td>3</td><td>Amazon IAM Key</td></tr>
+    <tr><td>4</td><td>Blue Coat Account Custom (SSH)</td></tr>
+    <tr><td>5</td><td>Blue Coat Enable Password Custom (SSH)</td></tr>
+    <tr><td>6</td><td>Cisco Account Custom (SSH)</td></tr>
+    <tr><td>8</td><td>Cisco Enable Secret Custom (SSH)</td></tr>
+    <tr><td>10</td><td>Custom Password Changer</td></tr>
+    <tr><td>11</td><td>ESX/ESXi (API)</td></tr>
+    <tr><td>12</td><td>F5 BIG-IP Root Account (SSH)</td></tr>
+    <tr><td>13</td><td>Generic Discovery-Only Credentials</td></tr>
+    <tr><td>14</td><td>Generic ODBC (DataSource)</td></tr>
+    <tr><td>15</td><td>HP iLO Account Custom (SSH)</td></tr>
+    <tr><td>16</td><td>IBM iSeries Mainframe</td></tr>
+    <tr><td>17</td><td>Juniper Account Custom (SSH)</td></tr>
+    <tr><td>18</td><td>LDAP (Active Directory)</td></tr>
+    <tr><td>19</td><td>LDAP (DSEE)</td></tr>
+    <tr><td>20</td><td>LDAP (OpenLDAP)</td></tr>
+    <tr><td>21</td><td>MSS_CiscoFW</td></tr>
+    <tr><td>22</td><td>MySQL Account</td></tr>
+    <tr><td>23</td><td>Office365</td></tr>
+    <tr><td>24</td><td>Oracle Account</td></tr>
+    <tr><td>25</td><td>Oracle Account (AS SYS)</td></tr>
+    <tr><td>26</td><td>Oracle Account (DataSource)</td></tr>
+    <tr><td>27</td><td>PostgreSQL Account (x64)</td></tr>
+    <tr><td>28</td><td>PowerShell Script</td></tr>
+    <tr><td>29</td><td>SAP Account</td></tr>
+    <tr><td>30</td><td>SonicWall NSA Web Admin Account</td></tr>
+    <tr><td>31</td><td>SonicWall NSA Web Local User Account</td></tr>
+    <tr><td>32</td><td>SQL Server Account</td></tr>
+    <tr><td>33</td><td>SSH Key Rotation</td></tr>
+    <tr><td>34</td><td>SSH Key Rotation (No Password)</td></tr>
+    <tr><td>35</td><td>SSH Key Rotation Privileged Account</td></tr>
+    <tr><td>36</td><td>SSH Key Rotation Privileged Account (No Password)</td></tr>
+    <tr><td>37</td><td>Sybase Account</td></tr>
+    <tr><td>38</td><td>Test Password Changer</td></tr>
+    <tr><td>39</td><td>Unix Account (SSH)</td></tr>
+    <tr><td>41</td><td>Unix Account Custom (SSH)</td></tr>
+    <tr><td>43</td><td>Unix Account SU Takeover (SSH)</td></tr>
+    <tr><td>44</td><td>Unix Account SUDO Takeover (SSH)</td></tr>
+    <tr><td>45</td><td>Unix Root Account Custom (SSH)</td></tr>
+    <tr><td>46</td><td>WatchGuard Custom (SSH)</td></tr>
+    <tr><td>47</td><td>Web User Account</td></tr>
+    <tr><td>48</td><td>Windows Account</td></tr>
+    <tr><td>49</td><td>z/OS Mainframe</td></tr>
+</table>
+
+</p>
+
+Built-in RPCs have the advantage of being included standard in Secret Server. As such built-in remote password changers
+are expected to have been tested and can be used reliably in a stable production environment. If the on-boarding for a
+digital platform matches one of the built-in RPCs above, then this saves time during implementation and validation.
+Processing by a built-in password changer is done through internal commands. The commands cannot be edited. Standard
+protocols and port numbers are used by built-in RPCs. For example, "Unix Account (SSH)" uses SSH and port 22.
+
+<h4 class="uk-h4 tm-heading-fragment">B. Custom RPC</h4>
+
+If the built-in RPCs do not provide a match for the digital platform to be on-boarded, then a Custom RPC may be turned
+into the right fit. A basic command-line custom password changer defines a sequence of commands to execute, in order,
+as well as pauses after each command, to allow for processing time on the remote system. For example, on a Linux
+or Unix system, for a password change to be performed by a Custom RPC, the following RPC design is expected to be compatible
+with the target platform:
+
+</p>
+
+<table class="table">
+    <tr>
+        <th>Order</th><th>Command</th><th>Comment</th><th>Pause (MS)</th>
+    </tr>
+    <tr><td>1</td><td><code>passwd</code></td><td>Password Command</td><td>2000</td></tr>
+    <tr><td>2</td><td><code>$CURRENTPASSWORD</code></td><td>Current Password</td><td>2000</td></tr>
+    <tr><td>3</td><td><code>$NEWPASSWORD</code></td><td>New Password</td><td>2000</td></tr>
+    <tr><td>4</td><td><code>$NEWPASSWORD</code></td><td>Confirmed Password</td><td>2000</td></tr>
+</table>
+
+</p>
+
+The Custom RPC connects to the target system over SSH, using the <code>HostIP</code> value in the secret as well as the
+<code>LoginName</code> and <code>Password</code>. Change password follows the order of commands defined by the Custom RPC
+and provides the input required at each prompt:
+
+</p>
+
+<pre>
+$ passwd
+Changing password for user
+(current) UNIX password: $CURRENTPASSWORD
+Enter new UNIX password: $NEWPASSWORD
+Retype new UNIX password: $NEWPASSWORD
+passwd: password updated successfully
+</pre>
+
+</p>
+
+The <code>passwd</code> command prompts for the user's current password, if one is present. This password is then
+encrypted and compared against the stored password. After the password has been entered, password aging information is
+checked to see if the user is permitted to change the password at this time. If not, <code>passwd</code> refuses to
+change the password and exits.
+
+</p>
+
+The RPC is then prompted twice for a new password. The second entry is compared against the first and both are required
+to match in order for the password to be changed.
+
+</p>
+
+Then, the password is tested for complexity on the target host. The new password, the value of <code>$NEWPASSWORD</code>
+variable given to the Custom RPC at password change time, is <i>generated</i> based upon the password complexity rules
+associated with the secret template, which are expected to match the password rules on the host. In this case, because
+the platform allows a user to change their own password to self-service an account, and the new password value is strong,
+the Custom RPC is successful.
+
+</p>
+
+<h4 class="uk-h4 tm-heading-fragment">C. PowerShell RPC</h4>
+
+For a complete overview of remote password changing via PowerShell, see Thycotic Documentation:
+
+</p>
+
+<a class="uk-link-muted" href="https://docs.thycotic.com/ss/10.9.0/remote-password-changing/rpc-powershell" target="_blank">https://docs.thycotic.com/ss/10.9.0/remote-password-changing/rpc-powershell</a>
+
+</p>
+
+<b>Outcome of Task</b>
+
+<ul>
+    <li>Determine what approach to take for RPC: use Built-In, create a Custom RPC or PowerShell script</li>
+    <li>Validate the approach in Secret Server, by prototyping the RPC in a dev environment</li>
+</ul>
+
+
+<h3 class="uk-h3 tm-heading-fragment">3. Design Summary</h3>
+
+The following 5 outcomes are expected from design tasks:
+
+<ol>
+    <li>Define fields and field types to represent and to store a secret: design a Secret Template</li>
+    <li>Add custom fields to the template design for RPC and/or for full-text search via Credentials API</li>
+    <li>Compare password complexity rules in the digital platform to the built-in Secret Server password rules</li>
+    <li>Determine what approach to take for RPC: A) use Built-In, B) create a Custom RPC, or C) PowerShell script</li>
+    <li>Validate the approach in Secret Server, by prototyping the RPC in a dev environment</li>
+</ol>
+
+<h3 class="uk-h3 tm-heading-fragment">4. Next Step</h3>
+
+Once design is complete, PAM designers may move to the next step in the PAM on-boarding workflow:
+<a class="uk-link-muted"  href="implement">Implement</a>.
+
+</p></p>
+
+</div>
+</div>
+</div>
+
+</body>
+</html>
