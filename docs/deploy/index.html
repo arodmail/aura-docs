@@ -18,12 +18,9 @@ Deployment uses endpoints in the Production Environment for AURA:
     <tr>
         <th>Environment</th><th>Endpoint - LB URL</th>
     </tr>
-    <tr><td>Prd</td><td><a class="uk-link-muted" href="https://pam.sec.ibm.com/SecretServer/" target="_blank">
-        Secret Server</a></td></tr>
-    <tr><td>Prd</td><td><a class="uk-link-muted" href="https://pam.sec.ibm.com/credentials-manager/" target="_blank">
-        Credentials Manager</a></td></tr>
-    <tr><td>Prd</td><td><a class="uk-link-muted" href="https://pam.sec.ibm.com/credentials-api/swagger-ui/index.html?url=https://pam.sec.ibm.com/credentials-api/v3/api-docs/" target="_blank">
-        Credentials API</a></td></tr>
+    <tr><td>Prd</td><td>Secret Server</td></tr>
+    <tr><td>Prd</td><td>Credentials Manager</td></tr>
+    <tr><td>Prd</td><td>Credentials API</a></td></tr>
 </table>
 
 </p>
@@ -36,12 +33,9 @@ If LB URLs are not responsive, then Direct URLs may be used as alternatives to c
     <tr>
         <th>Environment</th><th>Endpoint - Direct URL</th>
     </tr>
-    <tr><td>Prd</td><td><a class="uk-link-muted" href="https://atl-p-iamwb-01a.sec.ibm.com/SecretServer/" target="_blank">
-        Secret Server</a></td></tr>
-    <tr><td>Prd</td><td><a class="uk-link-muted "href="https://aura-credentials-manager-xpp.apps-priv.atl-prd-ocp-01.cl.sec.ibm.com/" target="_blank">
-        Credentials Manager</a></td></tr>
-    <tr><td>Prd</td><td><a class="uk-link-muted" href="https://aura-credentials-ms-xpp.apps-priv.atl-prd-ocp-01.cl.sec.ibm.com/swagger-ui/index.html?configUrl=/v3/api-docs/swagger-config#/" target="_blank">
-        Credentials API</a></td></tr>
+    <tr><td>Prd</td><td>Secret Server</td></tr>
+    <tr><td>Prd</td><td>Credentials Manager</td></tr>
+    <tr><td>Prd</td><td>Credentials API</a></td></tr>
 </table>
 
 
@@ -90,7 +84,7 @@ TBD if possible
 If the design and implementation steps provides for a custom password changer to be created, then follow the procedure
 below. Otherwise, to use a built-in RPC, skip this step and go to "Assign Password Changer to Secret Template".
 
-<p>See Thycotic Documentation for <a class="uk-link-muted" href="https://docs.thycotic.com/ss/10.9.0/remote-password-changing/custom-password-changers/creating-a-custom-password-changer" target="_blank">
+<p>See Thycotic Documentation for <a class="uk-link-muted" href="https://docs.delinea.com/online-help/secret-server/" target="_blank">
     Creating a Custom Password Changer</a>
 </p>
 
@@ -99,13 +93,13 @@ below. Otherwise, to use a built-in RPC, skip this step and go to "Assign Passwo
 Select the secret template imported in Step 1.1, it's ready to be assigned to an RPC, if required. Only Dynamic and Functional credentials
 require a remote password changer. This step may be skipped for Static and Controlled credential templates.
 
-<p>See Thycotic Documentation for <a class="uk-link-muted" href="https://docs.thycotic.com/ss/10.9.0/remote-password-changing/assign-a-pw-changer-to-a-secret-template/index.md" target="_blank">
+<p>See Thycotic Documentation for <a class="uk-link-muted" href="https://docs.delinea.com/online-help/secret-server/" target="_blank">
     Assigning a Password Changer to a Secret Template</a>
 </p>
 
 <h3 class="uk-h3 tm-heading-fragment">5. Export/Import Secret(s)</h3>
 
-<p>See Thycotic Documentation for <a class="uk-link-muted" href="https://docs.thycotic.com/ss/10.9.0/secret-import-and-export" target="_blank">
+<p>See Thycotic Documentation for <a class="uk-link-muted" href="https://docs.delinea.com/online-help/secret-server/" target="_blank">
     Secret Import and Export</a>
 </p>
 
@@ -134,7 +128,7 @@ To test Dynamic and Controlled secrets/credentials through Secret Server:
 
 <p>1. Login with your AD username/password to <b>Secret Server - Prd</b></p>
 
-<p>2. Run a <a class="uk-link-muted" href="https://docs.thycotic.com/ss/10.9.0/secret-heartbeats/running-heartbeat-for-a-secret" target="_blank">Heartbeat</a>
+<p>2. Run a <a class="uk-link-muted" href="https://docs.delinea.com/online-help/secret-server/" target="_blank">Heartbeat</a>
     for each secret.</p>
 <p>3. Check-out the secret</p>
 <p>4. Confirm login/access to the managed endpoint using the password checked-out</p>
@@ -159,7 +153,7 @@ To test Dynamic secrets/credentials through Credentials Manager:
 
 <h4 class="uk-h4 tm-heading-fragment">C. Credentials API</h4>
 
-To test Static and/or Functional credentials access through <a class="uk-link-muted" target="_blank" href="https://pam.sec.ibm.com/credentials-api/swagger-ui/index.html?url=https://pam.sec.ibm.com/credentials-api/v3/api-docs/">Credentials API</a>:
+To test Static and/or Functional credentials access through <a class="uk-link-muted" target="_blank" uri="credentials-api">Credentials API</a>:
 
 <p>1. Login with your AD username/password to <b>Credentials API - Prd</b></p>
 

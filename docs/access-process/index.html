@@ -12,7 +12,7 @@ are two types of access requests: A) Access for User and B) Access for Applicati
 
 </p></p>
 
-To request access for an AD user to call <a class="uk-link-muted" target="_blank" href="https://pam.sec.ibm.com/credentials-api/swagger-ui/index.html?url=https://pam.sec.ibm.com/credentials-api/v3/api-docs/">Credentials API</a>
+To request access for an AD user to call <a class="uk-link-muted" target="_blank" uri="credentials-api">Credentials API</a>
 and/or to access the Secret Server web console, it is required, for compliance and audit purposes, for a 1LN manager to submit
 and/or approve a User MAC Request in Remedy.
 
@@ -47,8 +47,7 @@ If the AD account is to be used <i>administratively</i> to login to Secret Serve
 </p></p>
 
 To request access for an AD functional account to use Credentials API, a 1LN manager submits and/or approves a User MAC
-Request in Remedy, and the template Jira Story <a class="uk-link-muted" href="https://jira.sec.ibm.com/browse/XPS-47867" target="_blank">XPS-47867</a>
-is cloned to add the AD account to Hashicorp Vault.
+Request in Remedy, and the template Jira Story XPS-47867 is cloned to add the AD account to Hashicorp Vault.
 
 <div align="center" style="padding-top: 15px;padding-bottom: 15px;"><img src="images/access-process-application.png" width="950"/></div>
 
@@ -61,8 +60,7 @@ Process Flow
     <li>The AD group the AD account belongs to is sync'd into Secret Server</li>
     <li>The AD account in Secret Server is converted to an Application Account and activated</li>
     <li>The AD group the functional account belongs to is granted permissions to a Folder that contains the secrets the account needs</li>
-    <li>The template Jira Story <a class="uk-link-muted" href="https://jira.sec.ibm.com/browse/XPS-47867" target="_blank">XPS-47867</a>
-        is cloned to add the AD account to Hashicorp Vault</li>
+    <li>The template Jira Story XPS-47867 is cloned to add the AD account to Hashicorp Vault</li>
     <li>Microservices and other applications may then vault-inject the AD username/password from Hashicorp Vault</li>
     <li>Access is verified and access request is closed</li>
 </ul>
@@ -162,7 +160,7 @@ Permissions granted to the <i>Offering Enablement</i> Role in Secret Server incl
 </p>
 
 Once access is granted following the processes and procedure above, the Aura <i>Authorization Model</i> enforces access control.
-For an explanation of how authorization works in Aura, see <a class="uk-link-muted"  href="authorization">Authorization</a>.
+For an explanation of how authorization works in Aura, see <a class="uk-link-muted" uri="authorization">Authorization</a>.
 
 </div>
 </div>
